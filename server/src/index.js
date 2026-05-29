@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const pool = require('./db/database');
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -9,15 +10,8 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-app.get('/', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT NOW()');
-    res.status(200).json({ message: 'API running', dbTime: result.rows[0] });
-  } catch (error) {
-    console.error('Database connection error:', error);
-    res.status(500).json({ error: 'Database connection error' });
-  }
-});
+const publicPath = path.join(__dirname, '..', 'public', 'browser');
+app.use(express.static(publicPath));
 
 app.get('/tasks', async (req, res) => {
   try {
@@ -130,11 +124,6 @@ app.delete('/tasks/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to delete task' });
   }
 });
-
-const path = require('path');
-
-const publicPath = path.join(__dirname, '..', 'public', 'browser');
-app.use(express.static(publicPath));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(publicPath, 'index.html'));
