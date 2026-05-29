@@ -132,8 +132,18 @@ app.delete('/tasks/:id', async (req, res) => {
 });
 
 const path = require('path');
+const fs = require('fs');
 
-const publicPath = path.join(__dirname, '..', 'public');
+let publicPath = '/app/server/public';
+
+if (!fs.existsSync(path.join(publicPath, 'index.html'))) {
+  if (fs.existsSync(path.join(publicPath, 'browser', 'index.html'))) {
+    publicPath = '/app/server/public/browser';
+  } else if (fs.existsSync(path.join(publicPath, 'client', 'index.html'))) {
+    publicPath = '/app/server/public/client';
+  }
+}
+
 app.use(express.static(publicPath));
 
 app.get('/', (req, res) => {
