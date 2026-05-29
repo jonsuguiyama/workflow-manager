@@ -19,7 +19,7 @@ export type UpdateTaskPayload = Partial<Task>;
 })
 export class TasksService {
   // if AWS/Containers: environment.apiUrl
-  private apiUrl = 'https://onrender.com';
+  private apiUrl = '/tasks';
 
   constructor(private http: HttpClient) {}
 
