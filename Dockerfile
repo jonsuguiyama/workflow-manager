@@ -11,7 +11,8 @@ COPY server/package*.json ./server/
 RUN cd server && npm install --production
 COPY server/ ./server/
 
-COPY --from=frontend-builder /app/client/dist/client ./server/public
+COPY --from=frontend-builder /app/client/dist/client/. ./server/public/
+RUN cp -r /app/client/dist/client/browser/. ./server/public/ 2>/dev/null || true
 
 EXPOSE 3000
 ENV PORT=3000
