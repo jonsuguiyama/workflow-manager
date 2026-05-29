@@ -132,14 +132,16 @@ app.delete('/tasks/:id', async (req, res) => {
 });
 
 const path = require('path');
-app.use(express.static(path.join(__dirname, '..', 'public')));
+
+const publicPath = path.resolve(__dirname, '..', 'public');
+app.use(express.static(publicPath));
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+  res.sendFile(path.join(publicPath, 'index.html'));
 });
 
 app.use((req, res, next) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+  res.sendFile(path.join(publicPath, 'index.html'));
 });
 
 app.listen(port, () => {
