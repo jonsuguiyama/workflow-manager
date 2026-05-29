@@ -7,7 +7,10 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://onrender.com',
+  credentials: true
+}));
 app.use(express.json());
 
 const publicPath = path.join(__dirname, '..', 'public', 'browser');
