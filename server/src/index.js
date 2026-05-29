@@ -134,7 +134,7 @@ app.delete('/tasks/:id', async (req, res) => {
 const path = require('path');
 app.use(express.static(path.join(__dirname, '..', 'public'))); 
 
-app.get('/:path*', (req, res) => {
+app.use((req, res, next) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
 
