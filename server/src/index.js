@@ -134,21 +134,21 @@ app.delete('/tasks/:id', async (req, res) => {
 const path = require('path');
 const fs = require('fs');
 
-let publicPath = '/app/server/public';
-
-if (!fs.existsSync(path.join(publicPath, 'index.html'))) {
-  if (fs.existsSync(path.join(publicPath, 'browser', 'index.html'))) {
-    publicPath = '/app/server/public/browser';
-  } else if (fs.existsSync(path.join(publicPath, 'client', 'index.html'))) {
-    publicPath = '/app/server/public/client';
+app.get('/debug-files', (req, res) => {
+  try {
+    const rootFiles = fs.readdirSync('/app/server');
+    let publicFiles = [];
+    if (fs.existsSync('/app/server/public')) {
+      publicFiles = fs.readdirSync('/app/server/public');
+    }
+    res.json({ rootFiles, publicFiles });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-}
-
-app.use(express.static(publicPath));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(publicPath, 'index.html'));
 });
+
+const publicPath = path.join(__dirname, '..', 'public');
+app.use(express.static(publicPath));
 
 app.use((req, res, next) => {
   res.sendFile(path.join(publicPath, 'index.html'));
