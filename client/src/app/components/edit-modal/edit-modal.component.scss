@@ -1,0 +1,58 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.edit-box {
+  width: 90%;
+  max-width: 620px;
+  background: #171a21;
+  border: 1px solid #2b3140;
+  border-radius: 20px;
+  padding: 24px;
+  animation: modalIn .18s ease;
+  transform-origin: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+
+  h3 { margin: 0; }
+}
+
+.close-btn {
+  background: transparent;
+  color: #8f98ab;
+  font-size: 20px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  
+  &:hover {
+    background: #2b3140;
+    color: white;
+  }
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+@keyframes modalIn { 
+  from { opacity: 0; transform: translateY(20px) scale(.98); } 
+  to { opacity: 1; transform: translateY(0) scale(1); } 
+}

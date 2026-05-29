@@ -1,0 +1,89 @@
+<h1 class="title">Workflow Manager</h1>
+
+<div class="create-form">
+  <input placeholder="Title" [(ngModel)]="title" />
+  <input placeholder="Description" [(ngModel)]="description" />
+  
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="custom-form">
+      <mat-select class="custom-select" [(ngModel)]="priority">
+        <mat-option value="low">Low</mat-option>
+        <mat-option value="medium">Medium</mat-option>
+        <mat-option value="high">High</mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+  <button (click)="createTask()">Create</button>
+</div>
+
+<app-edit-modal
+  [open]="editMode"
+  [title]="editTitle"
+  [description]="editDescription"
+  [priority]="editPriority"
+  (close)="closeEdit()"
+  (save)="saveEdit($event)">
+</app-edit-modal>
+
+<div class="board" cdkDropListGroup>
+
+  <div *ngIf="isLoading()" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading tasks...</p>
+  </div>
+
+  <ng-container *ngIf="!isLoading()">
+    
+    <div class="column" id="todoList">
+      <h2>To Do</h2>
+      
+      <div class="task-list"
+           cdkDropList
+           [cdkDropListData]="todoTasks()"
+           (cdkDropListDropped)="onDrop($event, 'todo')">
+
+        <div *ngIf="todoTasks().length === 0" class="empty-state">
+          <span class="empty-icon">📭</span>
+          <h3>No tasks yet</h3>
+          <p>Create your first task to get started.</p>
+        </div>
+
+        <app-task-card
+          *ngFor="let task of todoTasks(); trackBy: trackById"
+          cdkDrag
+          [task]="task"
+          (toggle)="toggleStatus(task)"
+          (edit)="startEdit(task)"
+          (delete)="deleteTask(task.id)">
+        </app-task-card>
+
+      </div>
+    </div>
+
+    <div class="column" id="doneList">
+      <h2>Done</h2>
+
+      <div class="task-list"
+           cdkDropList
+           [cdkDropListData]="doneTasks()"
+           (cdkDropListDropped)="onDrop($event, 'done')">
+
+        <div *ngIf="doneTasks().length === 0" class="empty-state">
+          <span class="empty-icon">✅</span>
+          <h3>No completed tasks</h3>
+          <p>Finished tasks will appear here.</p>
+        </div>
+
+        <app-task-card
+          *ngFor="let task of doneTasks(); trackBy: trackById"
+          cdkDrag
+          [task]="task"
+          (toggle)="toggleStatus(task)"
+          (edit)="startEdit(task)"
+          (delete)="deleteTask(task.id)">
+        </app-task-card>
+
+      </div>
+    </div>
+
+  </ng-container>
+</div>

@@ -1,0 +1,169 @@
+@use '@angular/material' as mat;
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: #0f1115;
+  color: #f5f7fa;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  @include mat.theme((
+    color: (primary: mat.$azure-palette, tertiary: mat.$blue-palette),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+.cdk-overlay-pane .mat-mdc-select-panel { 
+  background: #11141a !important; 
+  border: 1px solid #2b3140 !important; 
+  border-radius: 12px !important;
+  padding: 0 !important;
+} 
+  
+.mat-mdc-option { color: white !important; } 
+.mat-mdc-select-value { font-size: 12px !important; color: white; min-height: 0 !important; }
+.mat-mdc-option:hover { background: #222838 !important; } 
+.mat-mdc-option.mdc-list-item--selected { background: #4f8cff !important; }
+.mat-mdc-option .mdc-list-item__primary-text { font-size: 12px !important; }
+
+input, textarea {
+  width: 100%; 
+  background: #11141a; 
+  border: 1px solid #2a2f3c; 
+  color: white;
+  border-radius: 12px; 
+  padding: 14px 16px !important; 
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+
+  &:focus {
+    outline: none; 
+    border-color: #4f8cff;  
+    background: #151923;
+  }
+}
+
+textarea { 
+  resize: vertical; 
+  min-height: 120px; 
+}
+
+mat-select {
+  width: 100% !important;
+  background: transparent !important; 
+  border: none !important;            
+  padding: 0 !important;             
+  border-radius: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.custom-form {
+  display: inline-flex !important;
+  vertical-align: middle;
+  width: auto;
+  height: 46px !important;
+
+  .mat-mdc-text-field-wrapper {
+    background: #11141a !important; 
+    border: 1px solid #2a2f3c !important; 
+    border-radius: 12px !important; 
+    padding: 0 16px !important;
+    height: 46px !important;
+    max-height: 46px !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    transition: border-color .2s ease, background .2s ease;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .mat-mdc-form-field-flex,
+  .mat-mdc-form-field-infix {
+    height: 100% !important;
+    min-height: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  &.mat-form-field-focused .mat-mdc-text-field-wrapper {
+    border-color: #4f8cff !important;  
+    background: #151923 !important;
+  }
+
+  .mdc-notched-outline,
+  .mdc-notched-outline__leading,
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing {
+    border: none !important;
+    border-width: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+}
+
+button {
+  border: none; 
+  border-radius: 10px; 
+  padding: 10px 14px; 
+  font-weight: 600; 
+  cursor: pointer;
+  transition: background .18s ease, transform .12s ease, opacity .18s ease;
+  
+  &.primary { background: #4f8cff; padding: 14px 16px; color: white; }
+  &.primary:hover { background: #3a6fd0; }
+  &.secondary { background: #2a2f3c; color: #f5f7fa; }
+  &.secondary:hover { background: #363d4d; }
+  &.danger { background: #5b2323; color: #ffb4b4; }
+  &.danger:hover { background: #753030; }
+}
+
+.cdk-drag-preview {
+  margin: 0 !important;
+  padding: 0 !important; 
+  display: block !important;
+  width: var(--cdk-drag-preview-width, auto);
+  height: auto !important;
+  background: #1d2230 !important; 
+  border: 1px solid #2b3140 !important;
+  border-radius: 16px;
+  box-shadow: none !important; 
+  overflow: hidden !important;
+  pointer-events: none;
+  cursor: grabbing !important;
+  transition: none !important;
+
+  > * {
+    padding: 18px !important;
+    margin: 0 !important;
+  }
+}
+
+.cdk-drag-placeholder {
+  background: rgba(79, 140, 255, 0.05) !important;
+  border: 2px dashed #4f8cff !important; 
+  box-shadow: none !important;
+  opacity: 0.5 !important;
+  margin-bottom: 16px !important;
+
+  * {
+    visibility: hidden !important;
+  }
+}
+
+.cdk-drop-list-dragging .cdk-drag { transition: transform 250ms cubic-bezier(0, 0, 0.2, 1); }
+.cdk-drag-animating { transition: transform 300ms cubic-bezier(0, 0, 0.2, 1); }
+
+app-task-card { cursor: grab; }
+app-task-card:active { cursor: grabbing; }

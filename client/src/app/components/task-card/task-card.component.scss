@@ -1,0 +1,81 @@
+.task-card {
+  position: relative;
+  background: #1d2230;
+  border: 1px solid #2b3140;
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: border-color .18s ease, background .18s ease, box-shadow .18s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: #4f8cff;
+    background: #222838;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  }
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+
+  p {
+    margin: 0;
+    color: #b7c0d1;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
+.task-list.cdk-drop-list-dragging .task-card {
+  animation: none !important;
+}
+
+.cdk-drag-animating {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1) !important;
+}
+
+.card-top {
+  display: flex; 
+  align-items: flex-start; 
+  justify-content: space-between; 
+  gap: 12px; 
+  margin-bottom: 10px; 
+
+  h3 { 
+    margin: 0; 
+    font-size: 17px; 
+    line-height: 1.3; 
+  } 
+} 
+
+.priority { 
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  padding: 6px 10px; 
+  border-radius: 999px; 
+  font-size: 11px; 
+  font-weight: 700; 
+  text-transform: uppercase; 
+  letter-spacing: .4px; 
+
+  &.low { background: rgba(79, 140, 255, 0.15); color: #7eb0ff; } 
+  &.medium { background: rgba(255, 184, 77, 0.15); color: #ffbe5c; } 
+  &.high { background: rgba(255, 92, 92, 0.15); color: #ff7b7b; }
+} 
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+  flex-wrap: wrap; 
+
+  button {
+    flex: 1; 
+    min-width: 80px; 
+  }
+}
