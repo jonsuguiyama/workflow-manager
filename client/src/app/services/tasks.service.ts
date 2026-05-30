@@ -19,7 +19,7 @@ export type UpdateTaskPayload = Partial<Task>;
 })
 export class TasksService {
   // if AWS/Containers: environment.apiUrl
-  private apiUrl = '/tasks';
+  private apiUrl = '';
 
   constructor(private http: HttpClient) {}
 
