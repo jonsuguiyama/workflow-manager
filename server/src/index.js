@@ -26,23 +26,6 @@ app.use(cookieParser());
 const publicPath = path.join(__dirname, '..', 'public', 'browser');
 app.use(express.static(publicPath));
 
-app.use((req, res, next) => {
-
-  if (
-    !req.path.startsWith('/api') && 
-    !req.path.startsWith('/tasks') && 
-    req.accepts('html') && 
-    !req.xhr && 
-    !req.headers['x-requested-with']
-  ) {
-    if (process.env.NODE_ENV !== 'production') {
-      return res.status(404).end();
-    }
-    return res.sendFile(path.join(publicPath, 'index.html'));
-  }
-  next();
-});
-
 app.use('/api/auth', authRoutes);
 
 app.get('/tasks', authenticateToken, async (req, res) => {
@@ -163,6 +146,16 @@ app.delete('/tasks/:id', authenticateToken, async (req, res) => {
     console.error('Delete task error:', error);
     res.status(500).json({ error: 'Failed to delete task' });
   }
+});
+
+app.use((req, res, next) => {
+  if (req.accepts('html') && !req.xhr && !req.headers['x-requested-with']) {
+    if (process.env.NODE_ENV !== 'production') {
+      return res.status(404).end();
+    }
+    return res.sendFile(path.join(publicPath, 'index.html'));
+  }
+  next();
 });
 
 app.listen(port, () => {
