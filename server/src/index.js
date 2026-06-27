@@ -9,6 +9,8 @@ const { authenticateToken } = require('./utils/authMiddleware');
 
 const app = express();
 
+app.set('trust proxy', 1); 
+
 app.disable('x-powered-by');
 
 const port = process.env.PORT || 3000;
@@ -25,7 +27,14 @@ const publicPath = path.join(__dirname, '..', 'public', 'browser');
 app.use(express.static(publicPath));
 
 app.use((req, res, next) => {
-  if (!req.path.startsWith('/api') && req.accepts('html') && !req.xhr && !req.headers['x-requested-with']) {
+
+  if (
+    !req.path.startsWith('/api') && 
+    !req.path.startsWith('/tasks') && 
+    req.accepts('html') && 
+    !req.xhr && 
+    !req.headers['x-requested-with']
+  ) {
     if (process.env.NODE_ENV !== 'production') {
       return res.status(404).end();
     }
