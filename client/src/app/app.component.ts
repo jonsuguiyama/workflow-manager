@@ -10,7 +10,7 @@ import { EditModalComponent } from './components/edit-modal/edit-modal.component
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-tasks', //changed from app-root to avoid selector collisions
   standalone: true,
   imports: [
     CommonModule, FormsModule, MatSelectModule, MatOptionModule, 

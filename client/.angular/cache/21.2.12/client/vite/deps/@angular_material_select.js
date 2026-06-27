@@ -1,14 +1,20 @@
 import {
+  FormGroupDirective,
+  NgControl,
+  NgForm,
+  Validators
+} from "./chunk-6LQPDIHV.js";
+import {
   CdkConnectedOverlay,
   CdkOverlayOrigin,
   OVERLAY_DEFAULT_CONFIG,
   OverlayModule,
   createRepositionScrollStrategy
-} from "./chunk-RRIB2TYS.js";
+} from "./chunk-QDTEGW3D.js";
 import {
   CdkScrollableModule,
   ViewportRuler
-} from "./chunk-WAWIYVQY.js";
+} from "./chunk-GWZGF34X.js";
 import {
   ErrorStateMatcher,
   MAT_OPTGROUP,
@@ -19,7 +25,7 @@ import {
   _ErrorStateTracker,
   _countGroupLabelsBeforeOption,
   _getOptionScrollPosition
-} from "./chunk-UMW3TSWC.js";
+} from "./chunk-CSRVKU5Z.js";
 import {
   A,
   ActiveDescendantKeyManager,
@@ -37,30 +43,24 @@ import {
   coerceBooleanProperty,
   hasModifierKey,
   removeAriaReferencedId
-} from "./chunk-H7BXKSXG.js";
-import "./chunk-QAVNRHBF.js";
-import "./chunk-C55UHBPU.js";
+} from "./chunk-J46HZBY2.js";
 import {
   _IdGenerator,
   _getEventTarget
-} from "./chunk-56WA27RM.js";
+} from "./chunk-6FBVGPZI.js";
 import {
   Platform
-} from "./chunk-P5NBJTAR.js";
+} from "./chunk-G7ULA6B3.js";
 import {
   BidiModule,
   Directionality
-} from "./chunk-O2TDMPSM.js";
-import {
-  FormGroupDirective,
-  NgControl,
-  NgForm,
-  Validators
-} from "./chunk-LKN7NZIJ.js";
+} from "./chunk-RZGZAQEN.js";
+import "./chunk-262HQHIF.js";
 import {
   NgTemplateOutlet
-} from "./chunk-BRNTZESX.js";
-import "./chunk-YKG6SW5Q.js";
+} from "./chunk-WETJXR6H.js";
+import "./chunk-RNH2BQPV.js";
+import "./chunk-N5MQVFQK.js";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -77,34 +77,21 @@ import {
   Input,
   NgModule,
   NgZone,
-  Observable,
   Output,
   Renderer2,
   RendererFactory2,
-  Subject,
-  Subscription,
   ViewChild,
   ViewEncapsulation,
   afterRenderEffect,
   booleanAttribute,
   computed,
   contentChild,
-  defer,
   effect,
-  filter,
   forwardRef,
   inject,
-  map,
-  merge,
   numberAttribute,
-  pairwise,
   setClassMetadata,
-  shareReplay,
   signal,
-  startWith,
-  switchMap,
-  take,
-  takeUntil,
   viewChild,
   ɵɵNgOnChangesFeature,
   ɵɵProvidersFeature,
@@ -147,7 +134,25 @@ import {
   ɵɵtextInterpolate,
   ɵɵviewQuery,
   ɵɵviewQuerySignal
-} from "./chunk-TMSCYEWN.js";
+} from "./chunk-FGPJ52CX.js";
+import {
+  defer,
+  merge
+} from "./chunk-J46EEYGT.js";
+import "./chunk-4YCCEXQQ.js";
+import {
+  Observable,
+  Subject,
+  Subscription,
+  filter,
+  map,
+  pairwise,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  takeUntil
+} from "./chunk-U7EDC2PH.js";
 
 // node_modules/@angular/cdk/fesm2022/_selection-model-chunk.mjs
 var SelectionModel = class {

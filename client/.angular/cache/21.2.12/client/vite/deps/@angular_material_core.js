@@ -12,10 +12,10 @@ import {
   _ErrorStateTracker,
   _countGroupLabelsBeforeOption,
   _getOptionScrollPosition
-} from "./chunk-UMW3TSWC.js";
+} from "./chunk-CSRVKU5Z.js";
 import {
   MatRippleLoader
-} from "./chunk-2QEMGQ3I.js";
+} from "./chunk-5HNZW3Q3.js";
 import {
   MATERIAL_ANIMATIONS,
   MAT_RIPPLE_GLOBAL_OPTIONS,
@@ -28,16 +28,16 @@ import {
   _animationsDisabled,
   _getAnimationsState,
   defaultRippleAnimationConfig
-} from "./chunk-H7BXKSXG.js";
-import "./chunk-QAVNRHBF.js";
-import "./chunk-C55UHBPU.js";
-import "./chunk-56WA27RM.js";
-import "./chunk-P5NBJTAR.js";
+} from "./chunk-J46HZBY2.js";
+import "./chunk-6FBVGPZI.js";
+import "./chunk-G7ULA6B3.js";
 import {
   BidiModule
-} from "./chunk-O2TDMPSM.js";
-import "./chunk-BRNTZESX.js";
-import "./chunk-YKG6SW5Q.js";
+} from "./chunk-RZGZAQEN.js";
+import "./chunk-262HQHIF.js";
+import "./chunk-WETJXR6H.js";
+import "./chunk-RNH2BQPV.js";
+import "./chunk-N5MQVFQK.js";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -47,14 +47,10 @@ import {
   Input,
   LOCALE_ID,
   NgModule,
-  Subject,
   Version,
   ViewEncapsulation,
-  __spreadProps,
-  __spreadValues,
   inject,
   setClassMetadata,
-  startWith,
   ɵɵclassProp,
   ɵɵdefineComponent,
   ɵɵdefineDirective,
@@ -63,7 +59,15 @@ import {
   ɵɵdefineNgModule,
   ɵɵprojection,
   ɵɵprojectionDef
-} from "./chunk-TMSCYEWN.js";
+} from "./chunk-FGPJ52CX.js";
+import "./chunk-J46EEYGT.js";
+import "./chunk-4YCCEXQQ.js";
+import {
+  Subject,
+  __spreadProps,
+  __spreadValues,
+  startWith
+} from "./chunk-U7EDC2PH.js";
 
 // node_modules/@angular/material/fesm2022/_date-formats-chunk.mjs
 var MAT_DATE_LOCALE = new InjectionToken("MAT_DATE_LOCALE", {

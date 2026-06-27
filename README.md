@@ -1,15 +1,16 @@
 # Workflow Manager 🚀
 
-A sleek, modern, and highly responsive Kanban-style task management application. Built to demonstrate full-stack capabilities, modern state management, and seamless user experience through drag-and-drop interfaces.
+A sleek, modern, and highly responsive Kanban-style task management application. Built to demonstrate advanced full-stack capabilities, robust infrastructure security, and seamless user experience through isolated temporary user sandbox environments.
 
 ## ✨ Features
 
-* **Interactive Kanban Board:** Effortlessly move tasks between "To Do" and "Done" using a smooth Drag & Drop interface.
-* **Modern State Management:** Fully implemented using Angular's latest `Signals` for reactive, glitch-free state updates.
-* **Complete CRUD Operations:** Create, Read, Update, and Delete tasks in real-time.
-* **Task Prioritization:** Visual indicators for task priority (Low, Medium, High).
-* **Responsive Design:** A mobile-first approach using CSS Grid and Flexbox, ensuring the board looks great on any screen size.
-* **Toast Notifications:** Non-intrusive UI feedback for user actions and error handling.
+* **Secure Session Lifecycle:** Token verification completely bypasses `localStorage` to eliminate XSS (Cross-Site Scripting) injection vectors. User authentication and state persistence rely on signed JWT payloads delivered via server-side `HttpOnly` cookies.
+* **Modern State Management:** Fully implemented using Angular's latest `Signals` for reactive, glitch-free state updates, preventing unnecessary component re-renders.
+* **Interactive Kanban Board:** Effortlessly move tasks between "To Do" and "Done" using an Angular CDK Drag & Drop interface with optimistic UI updates.
+* **Relational Schema Isolation:** Users and tasks are decoupled into a clean one-to-many relational structure in PostgreSQL. When temporary test sessions expire, a background clean-up routine safely purges expired accounts and their respective tasks using an `ON DELETE CASCADE` database constraint.
+* **Containerized Infrastructure:** Frontend and backend components are fully containerized using optimized Docker multi-stage builds to ensure consistent environment replication and minimal image sizes.
+* **Component & Overlay Architecture:** Core UI selectors and overlay mechanics like `MatSnackBar` are customized with global SCSS overrides to deliver unified dark-theme design feedback without bloating the DOM structure.
+* **Responsive Layout:** A mobile-first approach using CSS Grid and Flexbox, ensuring the board looks great on any screen size.
 
 ## 🛠️ Tech Stack
 
@@ -24,8 +25,12 @@ A sleek, modern, and highly responsive Kanban-style task management application.
 
 * **Environment:** Node.js
 * **Framework:** Express.js
-* **API:** RESTful Architecture
-* **Integration:** CORS-enabled, structured payload handling for reordering and status updates.
+* **Authentication:** Cookie-Parser, JWT, Bcrypt
+* **Database:** PostgreSQL (with raw connection pooling)
+
+### Infrastructure
+
+* **Containerization:** Docker (Multi-stage builds)
 
 ## 🚀 Getting Started
 
@@ -35,15 +40,15 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 Make sure you have the following installed:
 
-1. [Node.js](https://nodejs.org/) (v18 or higher recommended)
-2. [Angular CLI](https://angular.io/cli) (`npm install -g @angular/cli`)
+1. [Node.js](https://nodejs.org) (v18 or higher recommended)
+2. [Angular CLI](https://angular.io) (`npm install -g @angular/cli`)
 
 ### Installation & Setup
 
 1. **Clone the repository:**
 
     ```bash
-    git clone [https://github.com/jonsuguiyama/workflow-manager.git](https://github.com/jonsuguiyama/workflow-manager.git)
+    git clone https://github.com
     cd workflow-manager
     ```
 
@@ -62,7 +67,7 @@ The API should now be running on <http://localhost:3000>
     ```bash
     cd client
     npm install
-    ng serve
+    npm start
     ```
 
 4. **View the App:**
@@ -71,13 +76,11 @@ Open your browser and navigate to <http://localhost:4200/>
 
 ## ☁️ Deployment & Infrastructure Vision
 
-This application is architected with cloud-native principles in mind. The separation of concerns between the Angular frontend and Node.js backend makes it ideal for containerized deployments.
+This application is architected with cloud-native principles in mind. The separation of concerns between the Angular frontend and Node.js backend makes it ideal for distributed orchestrations.
 
 **Planned Architecture:**
 
-* Containerization: Writing Dockerfiles for both the frontend client and the Node.js API.
-
-* Orchestration: Deploying containers using Amazon Elastic Container Service (AWS ECS) or a Rancher-managed cluster.
+* Orchestration: Deploying the containerized stack using Amazon Elastic Container Service (AWS ECS) or a Rancher-managed cluster.
 
 * CI/CD: Implementing AWS CodePipeline to automate testing and deployment upon merging to the main branch.
 

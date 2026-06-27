@@ -1,5 +1,48 @@
 <h1 class="title">Workflow Manager</h1>
 
+<div class="insights-accordion">
+  <details>
+    <summary class="insights-summary">
+      <span>System Insights & Architecture Overview</span>
+      <span class="accordion-icon"></span>
+    </summary>
+    
+    <div class="insights-content">
+      <div class="insights-section">
+        <h3>Project Purpose</h3>
+        <p>This application was built to demonstrate full-stack capabilities, modern reactive state management, and robust infrastructure security. It provides a production-ready environment that replaces shared public databases with isolated user sessions to ensure data privacy and automated maintenance.</p>
+      </div>
+
+      <div class="insights-section">
+        <h3>Architecture & Security Sandbox</h3>
+        <p>Feel free to create, move, edit, or delete tasks to see how the board reacts. Everything you do here is strictly yours and completely invisible to other visitors. When you log in, the system automatically pulls a professional benchmark template I designed and clones it directly into your fresh session, so you don't start with an empty board.</p>
+        <p>To keep things fresh, a background routine runs automatically every 24 hours, safely wiping temporary sessions and their tasks using an <code>ON DELETE CASCADE</code> database constraint.</p>
+      </div>
+
+      <div class="insights-section">
+        <h3>Technical Breakdown & Features</h3>
+        <ul>
+          <li><strong>Reactive State Management:</strong> Built entirely with the latest Angular Signals. The application handles real-time updates for asynchronous network operations without unneeded component re-renders, preventing UI glitches.</li>
+          <li><strong>Native Drag & Drop Mechanics:</strong> Powered by Angular CDK DragAndDrop modules. Moving a task triggers an optimistic UI update for instant feedback, while the backend recalculates index positions in a batch database transaction.</li>
+          <li><strong>Component & Overlay Architecture:</strong> Integrated with Angular Material. Core UI selectors and overlay mechanics like MatSnackBar are customized with global SCSS overrides to deliver unified design feedback without bloating the DOM structure.</li>
+          <li><strong>Responsive UX & User Feedback:</strong> Built with a mobile-first approach using flexible CSS Grid layouts optimized for all screen sizes. Non-intrusive toast notifications handle real-time action feedback, while descriptive modal interfaces and native confirmation popups intercept critical events like deletions to prevent accidental data loss.</li>
+          <li><strong>Secure Session Lifecycle:</strong> Token verification bypasses localStorage completely to eliminate XSS injection vectors. Session persistence relies on signed JWT payloads delivered via server-side HttpOnly cookies.</li>
+          <li><strong>Route Protection:</strong> Routes are guarded using modern Angular functional guards. Protected pages execute a background validation ping to a dedicated verification route (<code>/api/auth/me</code>) before loading any component data into memory.</li>
+          <li><strong>Relational Schema Isolation:</strong> Organized with strict database constraints. Tasks and users are decoupled into a clean one-to-many relationship using optimized PostgreSQL raw connection pooling.</li>
+        </ul>
+      </div>
+
+      <div class="insights-footer">
+        <span class="tech-tags">Angular 17+ | Signals | Angular CDK | Material | TypeScript | SCSS | Node.js | Express | Cookie-Parser | JWT | Bcrypt | PostgreSQL | Docker</span>
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="github-link">
+          View Repository on GitHub ↗
+        </a>
+      </div>
+    </div>
+  </details>
+</div>
+
+
 <div class="create-form">
   <input placeholder="Title" [(ngModel)]="title" />
   <input placeholder="Description" [(ngModel)]="description" />

@@ -18,10 +18,9 @@ export type UpdateTaskPayload = Partial<Task>;
   providedIn: 'root'
 })
 export class TasksService {
-  // if AWS/Containers: environment.apiUrl
-  private apiUrl = '';
+  private readonly apiUrl = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   getTasks(): Observable<Task[]> {
     return this.http.get<Task[]>(`${this.apiUrl}/tasks`);
