@@ -18,7 +18,7 @@ export type UpdateTaskPayload = Partial<Task>;
   providedIn: 'root'
 })
 export class TasksService {
-  private readonly apiUrl = '';
+  private readonly apiUrl = '/api';
 
   constructor(private readonly http: HttpClient) {}
 

@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoutes');
 const { authenticateToken } = require('./utils/authMiddleware');
 
-const app = express();
+const app = report = express();
 
 app.set('trust proxy', 1); 
 
@@ -28,7 +28,7 @@ app.use(express.static(publicPath));
 
 app.use('/api/auth', authRoutes);
 
-app.get('/tasks', authenticateToken, async (req, res) => {
+app.get('/api/tasks', authenticateToken, async (req, res) => {
   try {
     const result = await pool.query(
       'SELECT * FROM tasks WHERE user_id = $1 ORDER BY "order" ASC, id DESC',
@@ -41,7 +41,7 @@ app.get('/tasks', authenticateToken, async (req, res) => {
   }
 });
 
-app.post('/tasks', authenticateToken, async (req, res) => {
+app.post('/api/tasks', authenticateToken, async (req, res) => {
   const { title, description, status, priority } = req.body;
   try {
     const result = await pool.query(
@@ -57,7 +57,7 @@ app.post('/tasks', authenticateToken, async (req, res) => {
   }
 });
 
-app.put('/tasks/reorder', authenticateToken, async (req, res) => {
+app.put('/api/tasks/reorder', authenticateToken, async (req, res) => {
   const tasksToUpdate = req.body;
   
   if (!Array.isArray(tasksToUpdate)) {
@@ -86,7 +86,7 @@ app.put('/tasks/reorder', authenticateToken, async (req, res) => {
   }
 });
 
-app.put('/tasks/:id', authenticateToken, async (req, res) => {
+app.put('/api/tasks/:id', authenticateToken, async (req, res) => {
   const { id } = req.params;
   const { title, description, priority } = req.body;
 
@@ -110,7 +110,7 @@ app.put('/tasks/:id', authenticateToken, async (req, res) => {
   }
 });
 
-app.put('/tasks/:id/status', authenticateToken, async (req, res) => {
+app.put('/api/tasks/:id/status', authenticateToken, async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
@@ -131,7 +131,7 @@ app.put('/tasks/:id/status', authenticateToken, async (req, res) => {
   }
 });
 
-app.delete('/tasks/:id', authenticateToken, async (req, res) => {
+app.delete('/api/tasks/:id', authenticateToken, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -148,14 +148,11 @@ app.delete('/tasks/:id', authenticateToken, async (req, res) => {
   }
 });
 
-app.use((req, res, next) => {
-  if (req.accepts('html') && !req.xhr && !req.headers['x-requested-with']) {
-    if (process.env.NODE_ENV !== 'production') {
-      return res.status(404).end();
-    }
-    return res.sendFile(path.join(publicPath, 'index.html'));
+app.get('*', (req, res) => {
+  if (process.env.NODE_ENV !== 'production') {
+    return res.status(404).end();
   }
-  next();
+  res.sendFile(path.join(publicPath, 'index.html'));
 });
 
 app.listen(port, () => {
