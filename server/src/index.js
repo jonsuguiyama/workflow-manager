@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoutes');
 const { authenticateToken } = require('./utils/authMiddleware');
 
-const app = report = express();
+const app = express();
 
 app.set('trust proxy', 1); 
 
@@ -50,7 +50,7 @@ app.post('/api/tasks', authenticateToken, async (req, res) => {
        RETURNING *`,
       [title, description || '', status || 'todo', priority || 'medium', req.user.id]
     );
-    res.status(201).json(result.rows[0]);
+    res.status(201).json(result.rows);
   } catch (error) {
     console.error('Create task error:', error);
     res.status(500).json({ error: 'Failed to create task' });
@@ -103,7 +103,7 @@ app.put('/api/tasks/:id', authenticateToken, async (req, res) => {
       return res.status(404).json({ error: 'Task not found or unauthorized' });
     }
 
-    res.status(200).json(result.rows[0]);
+    res.status(200).json(result.rows);
   } catch (error) {
     console.error('Update task error:', error);
     res.status(500).json({ error: 'Failed to update task' });
@@ -124,7 +124,7 @@ app.put('/api/tasks/:id/status', authenticateToken, async (req, res) => {
       return res.status(404).json({ error: 'Task not found or unauthorized' });
     }
 
-    res.status(200).json(result.rows[0]);
+    res.status(200).json(result.rows);
   } catch (error) {
     console.error('Update status error:', error);
     res.status(500).json({ error: 'Failed to update status' });
@@ -148,11 +148,14 @@ app.delete('/api/tasks/:id', authenticateToken, async (req, res) => {
   }
 });
 
-app.get('*', (req, res) => {
+app.use((req, res, next) => {
   if (process.env.NODE_ENV !== 'production') {
     return res.status(404).end();
   }
-  res.sendFile(path.join(publicPath, 'index.html'));
+  if (!req.path.startsWith('/api')) {
+    return res.sendFile(path.join(publicPath, 'index.html'));
+  }
+  next();
 });
 
 app.listen(port, () => {
