@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db/database');
 const { hashPassword, generateToken } = require('../utils/auth');
+const isProduction = process.env.NODE_ENV === 'production';
 
 // POST /api/auth/demo - Create a unique temporary demo user session
 router.post('/demo', async (req, res) => {
@@ -44,10 +45,10 @@ router.post('/demo', async (req, res) => {
 
     // Set the secure HttpOnly cookie in the response header
     res.cookie('token', token, {
-      httpOnly: true,                                  // Prevents client-side scripts from reading the cookie (Mitigates XSS)
-      secure: process.env.NODE_ENV === 'production',   // Forces HTTPS in production (Render), allows HTTP locally
-      sameSite: 'lax',                                 // Protects against CSRF attacks while allowing normal navigation
-      maxAge: 24 * 60 * 60 * 1000                      // Cookie expires automatically in 24 hours
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+      maxAge: 24 * 60 * 60 * 1000
     });
 
     // Return only non-sensitive user metadata to the frontend
