@@ -63,12 +63,13 @@ INSERT INTO tasks (title, description, status, priority, "order", user_id)
 SELECT * FROM (VALUES
   ('Migrate to Secure HttpOnly Cookies', 'Abandon vulnerable localStorage token storage and implement strict backend cookie-based authentication to fully mitigate XSS vectors.', 'done', 'high', 0, 1),
   ('Establish Relational Database Schema', 'Add the users table and connect a real foreign key constraint (ON DELETE CASCADE) between tasks and users - versioned in server/src/db/schema.sql.', 'done', 'high', 1, 1),
-  ('Design Modular Route Architecture', 'Decouple app.component.html logic into standalone functional routes and isolate express endpoints under dedicated router modules.', 'done', 'medium', 2, 1),
+  ('Design Modular Route Architecture', 'Decouple app.component.html logic into standalone functional routes and isolate express endpoints under dedicated router modules.', 'done', 'low', 2, 1),
   ('Implement Angular Functional Guards', 'Construct client-side route protection utilizing modern functional guards paired with a server-side session check endpoint (/api/auth/me).', 'done', 'medium', 3, 1),
   ('Implement Query Parameter Filtering', 'Server-side filtering and search via URL query parameters (?priority=high&search=...) instead of client-side filtering.', 'done', 'high', 4, 1),
   ('Setup Testing with Vitest & Supertest', '47 tests across client (Vitest + Angular Testing Library patterns) and server (Vitest + Supertest against a real Postgres test database, not mocked).', 'done', 'medium', 5, 1),
   ('Configure CI/CD Automation via GitHub Actions', 'Workflow at .github/workflows/test.yml - client build+test, server test with a real Postgres service container, and a Docker image build, on every push.', 'done', 'medium', 6, 1),
   ('Automate Stale Session Cleanup', 'Real scheduled job (server/src/utils/sessionCleanup.js) that deletes demo sessions older than 24h, running on startup and every 24h after.', 'done', 'high', 7, 1),
-  ('Add pagination for scale', 'Load more per column (not page-number pagination, which breaks drag-and-drop reordering across page boundaries) once task counts grow.', 'todo', 'medium', 0, 1)
+  ('Add pagination for scale', 'Load more per column (not page-number pagination, which breaks drag-and-drop reordering across page boundaries) once task counts grow.', 'todo', 'medium', 0, 1),
+  ('Add rate limiting to the demo login endpoint', 'POST /api/auth/demo has no rate limit - a script could create unlimited accounts faster than the 24h cleanup job can remove them. Add per-IP throttling (e.g. express-rate-limit).', 'todo', 'medium', 1, 1)
 ) AS seed(title, description, status, priority, "order", user_id)
 WHERE NOT EXISTS (SELECT 1 FROM tasks WHERE user_id = 1);

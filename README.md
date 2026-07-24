@@ -1,91 +1,123 @@
-# Workflow Manager 🚀
+# Workflow Manager
 
-A sleek, modern, and highly responsive Kanban-style task management application. Built to demonstrate advanced full-stack capabilities, robust infrastructure security, and seamless user experience through isolated temporary user sandbox environments.
+A Kanban-style task board with real authentication, drag-and-drop reordering, server-side filtering, and an isolated sandbox per visitor.
 
-## ✨ Features
+**Live demo:** [kanbanetic.vercel.app](https://kanbanetic.vercel.app) — click "Access Live Demo Version," no account needed.
 
-* **Architectural Insights Accordion:** An interactive component built into the header to explain the platform's engineering. It gives developers an immediate, deep-dive breakdown of the security sandbox and framework version disclosures.
-* **Temporary 24-Hour Sessions:** To keep the environment clean and production-ready, a background routine runs automatically every 24 hours, safely wiping temporary sessions and their respective tasks using an `ON DELETE CASCADE` database constraint.
-* **Secure Session Lifecycle:** Token verification completely bypasses `localStorage` to eliminate XSS (Cross-Site Scripting) injection vectors. User authentication and state persistence rely on signed JWT payloads delivered via server-side `HttpOnly` cookies.
-* **Modern State Management:** Fully implemented using Angular's latest `Signals` for reactive, glitch-free state updates, preventing unnecessary component re-renders.
-* **Interactive Kanban Board:** Effortlessly move tasks between columns using an Angular CDK Drag & Drop interface with optimistic UI updates for instant feedback.
-* **Containerized Infrastructure:** Frontend and backend components are fully containerized using optimized Docker multi-stage builds to ensure consistent environment replication.
-* **Responsive Layout:** A mobile-first approach using CSS Grid and Flexbox, ensuring the board looks great and scales correctly on any screen size.
+## Features
 
-## 🛠️ Tech Stack
+- **Isolated demo sessions** — every visitor gets their own cloned copy of a template board (Postgres, one-to-many relationship, `ON DELETE CASCADE`). Nothing you do is visible to anyone else.
+- **Secure session lifecycle** — JWT sessions delivered via server-side `HttpOnly` cookies, never `localStorage`.
+- **Automated session cleanup** — demo accounts older than 24h are deleted automatically (`server/src/utils/sessionCleanup.js`), so the database doesn't grow unbounded. Runs on a schedule locally/on Render; on Vercel it's triggered by Vercel Cron hitting `/api/cron/cleanup`, since serverless functions don't stay warm for `setInterval`.
+- **Reactive state management** — built with Angular Signals, no NgRx.
+- **Drag & drop** — Angular CDK, optimistic UI updates with backend-persisted ordering.
+- **Server-side filtering** — `GET /api/tasks?priority=high&search=...`, not client-side filtering.
+- **Responsive, mobile-first layout.**
 
-### Frontend
+## Tech Stack
 
-* **Framework:** Angular 17+ (Standalone Components)
-* **Reactivity:** Angular Signals
-* **UI/UX:** Angular Material & Angular CDK (Drag and Drop)
-* **Styling:** SCSS (with a custom dark theme)
+**Frontend:** Angular 21 (standalone components, Signals), Angular Material + CDK, SCSS
 
-### Backend
+**Backend:** Node.js, Express 5, PostgreSQL (raw `pg` connection pooling, no ORM), JWT + Bcrypt + Cookie-Parser
 
-* **Environment:** Node.js
-* **Framework:** Express.js
-* **Authentication:** Cookie-Parser, JWT, Bcrypt
-* **Database:** PostgreSQL (with raw connection pooling)
+**Testing:** Vitest across both client and server — client tests use Angular's built-in Vitest-based test runner; server tests run against a real Postgres test database via Supertest, not a mocked connection.
 
-### Infrastructure
+**Infrastructure:** Docker (multi-stage build), GitHub Actions CI, deployed on Vercel (Express wrapped as a serverless function + Vercel Cron)
 
-* **Containerization:** Docker (Multi-stage builds)
-
-## 🚀 Getting Started
-
-Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
+## Getting Started
 
 ### Prerequisites
 
-Make sure you have the following installed:
+- [Node.js](https://nodejs.org) 22+
+- A local PostgreSQL instance
 
-1. [Node.js](https://nodejs.org) (v18 or higher recommended)
-2. [Angular CLI](https://angular.io) (`npm install -g @angular/cli`)
+### Setup
 
-### Installation & Setup
+1. **Clone and set up the database:**
 
-1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/jonsuguiyama/workflow-manager
+   cd workflow-manager
+   createdb workflow_manager
+   psql -d workflow_manager -f server/src/db/schema.sql
+   ```
 
-    ```bash
-    git clone https://github.com
-    cd workflow-manager
-    ```
+   `schema.sql` is the versioned source of truth for the schema — it creates the tables, the `users.id → tasks.user_id` foreign key with `ON DELETE CASCADE`, and seeds the template account every demo session clones from.
 
-2. **Start the Backend API:**
+2. **Configure and start the backend:**
 
-    ```bash
-    cd server
-    npm install
-    npm start
-    ```
+   ```bash
+   cd server
+   cp .env.example .env   # fill in DB_* vars and JWT_SECRET
+   npm install
+   npm run dev
+   ```
 
-The API should now be running on <http://localhost:3000>
+   API runs on <http://localhost:3000>.
 
-3. **Start the FrontEnd Application:**
+3. **Start the frontend:**
 
-    ```bash
-    cd client
-    npm install
-    npm start
-    ```
+   ```bash
+   cd client
+   npm install
+   npm start
+   ```
 
-4. **View the App:**
+   Open <http://localhost:4200>.
 
-Open your browser and navigate to <http://localhost:4200/>
+## Testing
 
-## ☁️ Deployment & Infrastructure Vision
+```bash
+cd client && npm test   # Angular's Vitest-based runner
+cd server && npm test   # Vitest + Supertest against a real Postgres test database
+```
 
-This application is architected with cloud-native principles in mind. The separation of concerns between the Angular frontend and Node.js backend makes it ideal for distributed orchestrations.
+Server tests automatically provision a dedicated `workflow_manager_test` database from `schema.sql` (see `server/vitest.global-setup.js`) — no manual setup needed beyond having Postgres running locally.
 
-**Planned Architecture:**
+Both suites run on every push/PR via [GitHub Actions](.github/workflows/test.yml), alongside a Docker image build to catch container-specific breakage.
 
-* Orchestration: Deploying the containerized stack using Amazon Elastic Container Service (AWS ECS) or a Rancher-managed cluster.
+## Deployment
 
-* CI/CD: Implementing AWS CodePipeline to automate testing and deployment upon merging to the main branch.
+### Vercel (used for the live demo)
 
-* Infrastructure as Code (IaC): Managing the routing (Elastic Load Balancing) and resource provisioning via AWS CloudFormation.
+The Express API is wrapped as a Vercel serverless function (`api/index.js`) and the Angular build is served as static files — see `vercel.json` for the build/rewrite configuration. Required environment variables (Production scope):
 
-## 📝 License
+| Key | Value |
+|---|---|
+| `DATABASE_URL` | A Postgres connection string (e.g. [Neon](https://neon.tech), which has a built-in serverless-friendly connection pooler) |
+| `JWT_SECRET` | Random string, distinct from your local dev secret |
+| `CORS_ORIGIN` | Your deployed domain, e.g. `https://kanbanetic.vercel.app` |
+| `CRON_SECRET` | Random string — authenticates Vercel Cron's daily hit against `/api/cron/cleanup` |
 
-This project is licensed under the MIT License - see the LICENSE.md file for details.
+### Docker (self-hosted)
+
+```bash
+docker build -t workflow-manager .
+docker run -p 3000:3000 --env-file server/.env -e NODE_ENV=production workflow-manager
+```
+
+Multi-stage build: builds the Angular client, then copies the output into the Express server's static-file path (`server/public`).
+
+## Project Structure
+
+```text
+client/           Angular app
+  src/app/
+    components/   header, footer, edit-modal, task-card, login
+    services/     auth.service.ts, tasks.service.ts
+    guards/       auth.guard.ts (functional route guard)
+server/           Express API
+  src/
+    db/           database.js, schema.sql
+    routes/       authRoutes.js
+    utils/        authMiddleware.js, sessionCleanup.js
+    index.js      task routes + app export
+api/index.js       Vercel serverless function entry point
+vercel.json        Vercel build/rewrite/cron config
+Dockerfile          multi-stage build for self-hosting
+.github/workflows/  CI
+```
+
+## License
+
+MIT — see [LICENSE.md](./LICENSE.md).
