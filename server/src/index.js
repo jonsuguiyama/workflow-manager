@@ -6,6 +6,7 @@ const path = require('node:path');
 const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoutes');
 const { authenticateToken } = require('./utils/authMiddleware');
+const { cleanupStaleSessions, startSessionCleanupSchedule } = require('./utils/sessionCleanup');
 
 const app = express();
 
@@ -15,8 +16,12 @@ app.disable('x-powered-by');
 
 const port = process.env.PORT || 3000;
 
+// Set explicitly in any deployed environment (see .env.example); falls
+// back to the local Angular dev server otherwise.
+const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:4200';
+
 app.use(cors({
-  origin: 'http://localhost:4200',
+  origin: corsOrigin,
   credentials: true
 }));
 
@@ -28,11 +33,40 @@ app.use(express.static(publicPath));
 
 app.use('/api/auth', authRoutes);
 
+const VALID_STATUSES = new Set(['todo', 'done']);
+const VALID_PRIORITIES = new Set(['low', 'medium', 'high']);
+
 app.get('/api/tasks', authenticateToken, async (req, res) => {
+  const { status, priority, search } = req.query;
+
+  const conditions = ['user_id = $1'];
+  const values = [req.user.id];
+
+  if (status) {
+    if (!VALID_STATUSES.has(status)) {
+      return res.status(400).json({ error: 'Invalid status filter' });
+    }
+    values.push(status);
+    conditions.push(`status = $${values.length}`);
+  }
+
+  if (priority) {
+    if (!VALID_PRIORITIES.has(priority)) {
+      return res.status(400).json({ error: 'Invalid priority filter' });
+    }
+    values.push(priority);
+    conditions.push(`priority = $${values.length}`);
+  }
+
+  if (search) {
+    values.push(`%${search}%`);
+    conditions.push(`(title ILIKE $${values.length} OR description ILIKE $${values.length})`);
+  }
+
   try {
     const result = await pool.query(
-      'SELECT * FROM tasks WHERE user_id = $1 ORDER BY "order" ASC, id DESC',
-      [req.user.id]
+      `SELECT * FROM tasks WHERE ${conditions.join(' AND ')} ORDER BY "order" ASC, id DESC`,
+      values
     );
     res.status(200).json(result.rows);
   } catch (error) {
@@ -148,6 +182,29 @@ app.delete('/api/tasks/:id', authenticateToken, async (req, res) => {
   }
 });
 
+// Triggered by Vercel Cron (see vercel.json) since serverless functions
+// don't stay warm for setInterval-based scheduling. Authenticated via the
+// Authorization header Vercel automatically attaches to cron invocations
+// when CRON_SECRET is set; on other hosts (Render, Docker) the app instead
+// runs cleanup via startSessionCleanupSchedule() below and this route is
+// simply unused.
+app.get('/api/cron/cleanup', async (req, res) => {
+  if (process.env.CRON_SECRET) {
+    const authHeader = req.headers.authorization;
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+  }
+
+  try {
+    await cleanupStaleSessions();
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Cron cleanup failed:', error);
+    res.status(500).json({ error: 'Cleanup failed' });
+  }
+});
+
 app.use((req, res, next) => {
   if (process.env.NODE_ENV !== 'production') {
     return res.status(404).end();
@@ -158,6 +215,14 @@ app.use((req, res, next) => {
   next();
 });
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+// Only start listening (and the cleanup scheduler) when this file is run
+// directly (`node src/index.js` / nodemon) - not when it's required as a
+// module, e.g. by tests importing `app` for supertest.
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+    startSessionCleanupSchedule();
+  });
+}
+
+module.exports = app;

@@ -28,4 +28,8 @@ export class AuthService {
       catchError(() => of(false))
     );
   }
+
+  logout(): Observable<{ success: boolean }> {
+    return this.http.post<{ success: boolean }>(`${this.apiUrl}/logout`, {}, { withCredentials: true });
+  }
 }

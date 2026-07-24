@@ -74,5 +74,15 @@ router.get('/me', authenticateToken, (req, res) => {
   res.status(200).json({ authenticated: true, user: req.user });
 });
 
+// POST /api/auth/logout - Clear the session cookie
+router.post('/logout', (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax'
+  });
+  res.status(200).json({ success: true });
+});
+
 
 module.exports = router;

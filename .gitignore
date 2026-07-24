@@ -13,9 +13,9 @@ npm-debug.log
 yarn-error.log
 
 # Environment variables (Crucial for backend security)
-.env
-.env.local
-.env.*.local
+.env*
+!.env.example
+!*/.env.example
 
 # IDEs and editors
 .idea/
@@ -48,3 +48,4 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+.vercel
