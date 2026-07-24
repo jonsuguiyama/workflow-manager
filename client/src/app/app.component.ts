@@ -1,35 +1,44 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { TasksService, Task } from './services/tasks.service';
+import { AuthService } from './services/auth.service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TaskCardComponent } from './components/task-card/task-card.component';
 import { EditModalComponent } from './components/edit-modal/edit-modal.component';
+import { HeaderComponent } from './components/header/header.component';
+import { FooterComponent } from './components/footer/footer.component';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-tasks', //changed from app-root to avoid selector collisions
   standalone: true,
   imports: [
-    CommonModule, FormsModule, MatSelectModule, MatOptionModule, 
-    MatSnackBarModule, TaskCardComponent, EditModalComponent, DragDropModule
+    CommonModule, FormsModule, MatSelectModule, MatOptionModule,
+    MatSnackBarModule, TaskCardComponent, EditModalComponent, DragDropModule,
+    HeaderComponent, FooterComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   private isSelecting = false;
-  
+  private searchDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+
   tasks = signal<Task[]>([]);
   todoTasks = signal<Task[]>([]);
   doneTasks = signal<Task[]>([]);
   isLoading = signal<boolean>(true);
 
+  searchTerm = '';
+  priorityFilter = '';
+
   title = '';
   description = '';
-  priority = 'low';
+  priority = '';
 
   editMode = false;
   editTaskId: number | null = null;
@@ -37,7 +46,19 @@ export class AppComponent implements OnInit {
   editDescription = '';
   editPriority = 'low';
 
-  constructor(private tasksService: TasksService, private snackBar: MatSnackBar) {}
+  constructor(
+    private tasksService: TasksService,
+    private snackBar: MatSnackBar,
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  onLogout() {
+    this.authService.logout().subscribe({
+      next: () => this.router.navigate(['/login']),
+      error: () => this.router.navigate(['/login'])
+    });
+  }
 
   ngOnInit() {
     this.loadTasks();
@@ -48,7 +69,11 @@ export class AppComponent implements OnInit {
     });
   }
 
-  showToast(message: string, isError = false) { 
+  ngOnDestroy() {
+    clearTimeout(this.searchDebounceTimer);
+  }
+
+  showToast(message: string, isError = false) {
     this.snackBar.open(message, 'OK', { 
       duration: 3000, 
       horizontalPosition: 'right', 
@@ -59,7 +84,10 @@ export class AppComponent implements OnInit {
 
   loadTasks() {
     this.isLoading.set(true);
-    this.tasksService.getTasks().subscribe({
+    this.tasksService.getTasks({
+      priority: this.priorityFilter || undefined,
+      search: this.searchTerm.trim() || undefined
+    }).subscribe({
       next: (data) => {
         this.tasks.set(data);
         this.todoTasks.set(data.filter(t => t.status === 'todo'));
@@ -71,6 +99,25 @@ export class AppComponent implements OnInit {
         this.isLoading.set(false);
       }
     });
+  }
+
+  hasActiveFilters(): boolean {
+    return !!this.searchTerm.trim() || !!this.priorityFilter;
+  }
+
+  onSearchChange() {
+    clearTimeout(this.searchDebounceTimer);
+    this.searchDebounceTimer = setTimeout(() => this.loadTasks(), 300);
+  }
+
+  onPriorityFilterChange() {
+    this.loadTasks();
+  }
+
+  clearFilters() {
+    this.searchTerm = '';
+    this.priorityFilter = '';
+    this.loadTasks();
   }
 
   createTask() {
@@ -88,7 +135,7 @@ export class AppComponent implements OnInit {
       next: () => {
         this.title = '';
         this.description = '';
-        this.priority = 'low';
+        this.priority = '';
         this.loadTasks();
         this.showToast('Task created successfully');
       },

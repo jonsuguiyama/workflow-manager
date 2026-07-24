@@ -1,0 +1,43 @@
+<header class="app-header">
+  <span class="app-title">Workflow Manager</span>
+
+  <div class="header-actions">
+    <button class="ghost-btn about-btn" (click)="openAbout()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>
+      About
+    </button>
+    <button class="ghost-btn logout-btn" (click)="logout.emit()">Log out</button>
+  </div>
+</header>
+
+@if (aboutOpen()) {
+  <div class="modal-backdrop" (pointerdown)="onBackdropPointerDown($event)">
+    <div class="about-box">
+      <div class="modal-header">
+        <h3>About this project</h3>
+        <button class="close-btn" (click)="closeAbout()">✕</button>
+      </div>
+
+      <p>
+        A Kanban task board demonstrating a full-stack build: Angular
+        Signals for reactive state, Angular CDK drag &amp; drop with
+        backend-persisted ordering, and an Express + PostgreSQL API secured
+        with JWT sessions in HttpOnly cookies.
+      </p>
+      <p>Sign in with the demo button — no account needed.</p>
+
+      <a
+        href="https://github.com/jonsuguiyama/workflow-manager"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="about-link"
+      >
+        View source on GitHub ↗
+      </a>
+    </div>
+  </div>
+}

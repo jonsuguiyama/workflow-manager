@@ -6,20 +6,26 @@
       <button class="close-btn" (click)="close.emit()">✕</button>
     </div>
 
+    <label class="field-label" for="edit-title">Title</label>
     <input
+      id="edit-title"
       placeholder="Task Title"
       [(ngModel)]="title"
       class="input"
     />
+
+    <label class="field-label" for="edit-priority">Priority</label>
     <mat-form-field appearance="outline" subscriptSizing="dynamic" class="custom-form">
-      <mat-select [(ngModel)]="priority" placeholder="Priority">
+      <mat-select id="edit-priority" [(ngModel)]="priority">
         <mat-option value="low">Low</mat-option>
         <mat-option value="medium">Medium</mat-option>
         <mat-option value="high">High</mat-option>
       </mat-select>
     </mat-form-field>
-    
+
+    <label class="field-label" for="edit-description">Description</label>
     <textarea
+      id="edit-description"
       placeholder="Task Description"
       [(ngModel)]="description"
       class="textarea"

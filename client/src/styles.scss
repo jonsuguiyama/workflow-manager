@@ -29,24 +29,30 @@ html {
   padding: 0 !important;
 } 
   
-.mat-mdc-option { color: white !important; } 
+.mat-mdc-option { color: white !important; }
 .mat-mdc-select-value { font-size: 12px !important; color: white; min-height: 0 !important; }
-.mat-mdc-option:hover { background: #222838 !important; } 
+.mat-mdc-select-placeholder { color: #8f98ab !important; }
+.mat-mdc-option:hover { background: #222838 !important; }
 .mat-mdc-option.mdc-list-item--selected { background: #4f8cff !important; }
 .mat-mdc-option .mdc-list-item__primary-text { font-size: 12px !important; }
 
 input, textarea {
-  width: 100%; 
-  background: #11141a; 
-  border: 1px solid #2a2f3c; 
+  width: 100%;
+  background: #11141a;
+  border: 1px solid #2a2f3c;
   color: white;
-  border-radius: 12px; 
-  padding: 14px 16px !important; 
+  border-radius: 12px;
+  padding: 14px 16px !important;
   transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
 
+  &::placeholder {
+    color: #8f98ab;
+    opacity: 1;
+  }
+
   &:focus {
-    outline: none; 
-    border-color: #4f8cff;  
+    outline: none;
+    border-color: #4f8cff;
     background: #151923;
   }
 }
