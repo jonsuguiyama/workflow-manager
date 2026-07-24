@@ -46,6 +46,14 @@ describe('GET /api/auth/me', () => {
     expect(res.status).toBe(200);
     expect(res.body.authenticated).toBe(true);
   });
+
+  it('rejects a cryptographically valid token whose user no longer exists', async () => {
+    const { agent, user } = await createAuthenticatedAgent(app);
+    await pool.query('DELETE FROM users WHERE id = $1', [user.id]);
+
+    const res = await agent.get('/api/auth/me');
+    expect(res.status).toBe(401);
+  });
 });
 
 describe('POST /api/auth/logout', () => {
