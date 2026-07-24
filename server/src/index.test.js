@@ -27,8 +27,8 @@ describe('POST /api/auth/demo', () => {
     const tasksA = await agentA.get('/api/tasks');
     const tasksB = await agentB.get('/api/tasks');
 
-    expect(tasksA.body).toHaveLength(7);
-    expect(tasksB.body).toHaveLength(7);
+    expect(tasksA.body).toHaveLength(10);
+    expect(tasksB.body).toHaveLength(10);
     // Different underlying rows despite identical content.
     expect(tasksA.body[0].id).not.toBe(tasksB.body[0].id);
   });
