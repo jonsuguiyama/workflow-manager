@@ -23,7 +23,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm test -- --coverage --coverage-reporters=text --coverage-reporters=lcov
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: client/coverage/client/lcov.info
@@ -67,7 +67,7 @@ jobs:
           cache-dependency-path: server/package-lock.json
       - run: npm ci
       - run: npm test -- --coverage
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: server/coverage/lcov.info
