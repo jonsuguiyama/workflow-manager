@@ -8,6 +8,10 @@ module.exports = defineConfig({
     setupFiles: ['./vitest.setup.js'],
     hookTimeout: 20000,
     testTimeout: 10000,
-    fileParallelism: false
+    fileParallelism: false,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov']
+    }
   }
 });

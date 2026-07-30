@@ -22,7 +22,12 @@ jobs:
           cache-dependency-path: client/package-lock.json
       - run: npm ci
       - run: npm run build
-      - run: npm test
+      - run: npm test -- --coverage --coverage-reporters=text --coverage-reporters=lcov
+      - uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: client/coverage/client/lcov.info
+          flags: client
 
   server:
     name: Server (test)
@@ -61,7 +66,12 @@ jobs:
           cache: npm
           cache-dependency-path: server/package-lock.json
       - run: npm ci
-      - run: npm test
+      - run: npm test -- --coverage
+      - uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: server/coverage/lcov.info
+          flags: server
 
   docker:
     name: Docker image build

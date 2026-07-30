@@ -1,5 +1,10 @@
 # Workflow Manager
 
+[![Test](https://github.com/jonsuguiyama/workflow-manager/actions/workflows/test.yml/badge.svg)](https://github.com/jonsuguiyama/workflow-manager/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/jonsuguiyama/workflow-manager/graph/badge.svg)](https://codecov.io/gh/jonsuguiyama/workflow-manager)
+[![Version](https://img.shields.io/github/package-json/v/jonsuguiyama/workflow-manager)](https://github.com/jonsuguiyama/workflow-manager/blob/main/package.json)
+[![License](https://img.shields.io/github/license/jonsuguiyama/workflow-manager)](https://github.com/jonsuguiyama/workflow-manager/blob/main/LICENSE.md)
+
 A Kanban-style task board with real authentication, drag-and-drop reordering, server-side filtering, and an isolated sandbox per visitor.
 
 **Live demo:** [kanbanetic.vercel.app](https://kanbanetic.vercel.app) — click "Access Live Demo Version," no account needed.
