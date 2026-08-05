@@ -33,7 +33,7 @@ describe('HeaderComponent', () => {
     component.openAbout();
     fixture.detectChanges();
 
-    fixture.debugElement.query(By.css('.close-btn')).nativeElement.click();
+    fixture.debugElement.query(By.css('.modal-close-btn')).nativeElement.click();
     fixture.detectChanges();
 
     expect(component.aboutOpen()).toBe(false);
