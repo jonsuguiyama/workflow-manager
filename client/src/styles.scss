@@ -1,17 +1,49 @@
 @use '@angular/material' as mat;
 
+:root {
+  --radius-xs: 8px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 18px;
+  --radius-2xl: 20px;
+  --radius-full: 999px;
+}
+
 html, body {
   margin: 0;
   padding: 0;
   min-height: 100%;
   background: #0f1115;
   color: #f5f7fa;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
   height: 100%;
 }
 
 * {
   box-sizing: border-box;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible,
+.mat-mdc-select-trigger:focus-visible {
+  outline: 2px solid #4f8cff;
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 html {
@@ -25,10 +57,10 @@ html {
 .cdk-overlay-pane .mat-mdc-select-panel { 
   background: #11141a !important; 
   border: 1px solid #2b3140 !important; 
-  border-radius: 12px !important;
+  border-radius: var(--radius-md) !important;
   padding: 0 !important;
-} 
-  
+}
+
 .mat-mdc-option { color: white !important; }
 .mat-mdc-select-value { font-size: 12px !important; color: white; min-height: 0 !important; }
 .mat-mdc-select-placeholder { color: #8f98ab !important; }
@@ -41,7 +73,7 @@ input, textarea {
   background: #11141a;
   border: 1px solid #2a2f3c;
   color: white;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   padding: 14px 16px !important;
   transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
 
@@ -51,7 +83,6 @@ input, textarea {
   }
 
   &:focus {
-    outline: none;
     border-color: #4f8cff;
     background: #151923;
   }
@@ -80,8 +111,8 @@ mat-select {
 
   .mat-mdc-text-field-wrapper {
     background: #11141a !important; 
-    border: 1px solid #2a2f3c !important; 
-    border-radius: 12px !important; 
+    border: 1px solid #2a2f3c !important;
+    border-radius: var(--radius-md) !important;
     padding: 0 16px !important;
     height: 46px !important;
     max-height: 46px !important;
@@ -120,9 +151,9 @@ mat-select {
 }
 
 button {
-  border: none; 
-  border-radius: 10px; 
-  padding: 10px 14px; 
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
   font-weight: 600; 
   cursor: pointer;
   transition: background .18s ease, transform .12s ease, opacity .18s ease;
@@ -143,8 +174,8 @@ button {
   height: auto !important;
   background: #1d2230 !important; 
   border: 1px solid #2b3140 !important;
-  border-radius: 16px;
-  box-shadow: none !important; 
+  border-radius: var(--radius-lg);
+  box-shadow: none !important;
   overflow: hidden !important;
   pointer-events: none;
   cursor: grabbing !important;
@@ -173,3 +204,82 @@ button {
 
 app-task-card { cursor: grab; }
 app-task-card:active { cursor: grabbing; }
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .6);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-box {
+  width: 90%;
+  background: #171a21;
+  border: 1px solid #2b3140;
+  border-radius: var(--radius-2xl);
+  padding: 24px;
+  animation: modalIn .18s ease;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+
+  h3 { margin: 0; }
+}
+
+.modal-close-btn {
+  background: transparent;
+  color: #8f98ab;
+  font-size: 20px;
+  padding: 6px 12px;
+  border-radius: var(--radius-xs);
+
+  &:hover {
+    background: #2b3140;
+    color: white;
+  }
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #8f98ab;
+  margin-bottom: -2px;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(20px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .task-card:hover {
+    transform: none;
+  }
+}

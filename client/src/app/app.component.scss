@@ -2,13 +2,6 @@
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  background: #0f1115;
-  color: #f5f7fa;
-  font-family: Inter, sans-serif;
-}
-
 :host {
   display: flex;
   flex-direction: column;
@@ -34,7 +27,7 @@ body {
   flex-direction: column;
   background: #171a21;
   border: 1px solid #252935;
-  border-radius: 18px;
+  border-radius: var(--radius-xl);
   padding: 20px;
   min-height: 300px;
 
@@ -116,7 +109,7 @@ body {
   text-align: center;
   padding: 48px 24px;
   border: 1px dashed #2f3747;
-  border-radius: 18px;
+  border-radius: var(--radius-xl);
   background: rgba(255, 255, 255, 0.02);
 
   h3 { 
@@ -155,10 +148,6 @@ body {
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 16px;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
 
 .task-list {
