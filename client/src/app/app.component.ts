@@ -9,6 +9,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TaskCardComponent } from './components/task-card/task-card.component';
 import { EditModalComponent } from './components/edit-modal/edit-modal.component';
+import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
@@ -18,7 +19,7 @@ import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from 
   standalone: true,
   imports: [
     CommonModule, FormsModule, MatSelectModule, MatOptionModule,
-    MatSnackBarModule, TaskCardComponent, EditModalComponent, DragDropModule,
+    MatSnackBarModule, TaskCardComponent, EditModalComponent, ConfirmModalComponent, DragDropModule,
     HeaderComponent, FooterComponent
   ],
   templateUrl: './app.component.html',
@@ -45,6 +46,9 @@ export class AppComponent implements OnInit, OnDestroy {
   editTitle = '';
   editDescription = '';
   editPriority = 'low';
+
+  deleteConfirmOpen = false;
+  private pendingDeleteId: number | null = null;
 
   constructor(
     private tasksService: TasksService,
@@ -144,7 +148,14 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   deleteTask(id: number) {
-    if (!confirm('Are you sure you want to delete this task?')) return;
+    this.pendingDeleteId = id;
+    this.deleteConfirmOpen = true;
+  }
+
+  confirmDelete() {
+    if (this.pendingDeleteId === null) return;
+    const id = this.pendingDeleteId;
+    this.closeDeleteConfirm();
 
     this.tasksService.deleteTask(id).subscribe({
       next: () => {
@@ -153,6 +164,11 @@ export class AppComponent implements OnInit, OnDestroy {
       },
       error: () => this.showToast('Failed to delete task', true)
     });
+  }
+
+  closeDeleteConfirm() {
+    this.deleteConfirmOpen = false;
+    this.pendingDeleteId = null;
   }
 
   toggleStatus(task: Task) {
@@ -223,6 +239,35 @@ export class AppComponent implements OnInit, OnDestroy {
 
   trackById(index: number, item: Task) {
     return item.id;
+  }
+
+  moveTask(task: Task, direction: 'up' | 'down') {
+    const isTodo = task.status === 'todo';
+    const list = [...(isTodo ? this.todoTasks() : this.doneTasks())];
+    const index = list.findIndex(t => t.id === task.id);
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (index === -1 || targetIndex < 0 || targetIndex >= list.length) return;
+
+    moveItemInArray(list, index, targetIndex);
+
+    if (isTodo) {
+      this.todoTasks.set(list);
+    } else {
+      this.doneTasks.set(list);
+    }
+
+    const payload = list.map((t, i) => ({
+      id: t.id,
+      order: i,
+      status: t.status
+    }));
+
+    this.tasksService.updateTaskOrders(payload).subscribe({
+      error: () => {
+        this.showToast('Error saving new order', true);
+        this.loadTasks();
+      }
+    });
   }
 
   onDrop(event: CdkDragDrop<Task[]>, newStatus: string) {

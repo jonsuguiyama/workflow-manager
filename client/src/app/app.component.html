@@ -1,14 +1,17 @@
 <app-header (logout)="onLogout()"></app-header>
 
-<div class="page-content">
+<div id="main-content" class="page-content">
 
 <h2 class="section-title">Create new task</h2>
 <div class="create-form">
-  <input placeholder="Title" [(ngModel)]="title" />
-  <input placeholder="Description" [(ngModel)]="description" />
+  <label class="field-label sr-only" for="new-task-title">Title</label>
+  <input id="new-task-title" placeholder="Title" [(ngModel)]="title" />
+
+  <label class="field-label sr-only" for="new-task-description">Description</label>
+  <input id="new-task-description" placeholder="Description" [(ngModel)]="description" />
 
   <mat-form-field appearance="outline" subscriptSizing="dynamic" class="custom-form">
-    <mat-select class="custom-select" placeholder="Priority" [(ngModel)]="priority">
+    <mat-select id="new-task-priority" class="custom-select" placeholder="Priority" [(ngModel)]="priority">
       <mat-option value="low">Low</mat-option>
       <mat-option value="medium">Medium</mat-option>
       <mat-option value="high">High</mat-option>
@@ -20,7 +23,9 @@
 
 <h2 class="section-title">Filters</h2>
 <div class="filter-bar">
+  <label class="field-label sr-only" for="task-search">Search tasks by keyword</label>
   <input
+    id="task-search"
     placeholder="Search tasks by keyword"
     [(ngModel)]="searchTerm"
     (ngModelChange)="onSearchChange()"
@@ -28,7 +33,7 @@
   />
 
   <mat-form-field appearance="outline" subscriptSizing="dynamic" class="custom-form">
-    <mat-select placeholder="Filter tasks by priority" [(ngModel)]="priorityFilter" (selectionChange)="onPriorityFilterChange()">
+    <mat-select id="priority-filter" placeholder="Filter tasks by priority" [(ngModel)]="priorityFilter" (selectionChange)="onPriorityFilterChange()">
       <mat-option value="">All priorities</mat-option>
       <mat-option value="low">Low</mat-option>
       <mat-option value="medium">Medium</mat-option>
@@ -49,6 +54,16 @@
   (close)="closeEdit()"
   (save)="saveEdit($event)">
 </app-edit-modal>
+
+<app-confirm-modal
+  [open]="deleteConfirmOpen"
+  title="Delete this task?"
+  message="This can't be undone."
+  confirmLabel="Delete"
+  cancelLabel="Cancel"
+  (confirmed)="confirmDelete()"
+  (cancelled)="closeDeleteConfirm()">
+</app-confirm-modal>
 
 <div class="board" cdkDropListGroup>
 
@@ -77,12 +92,16 @@
         </div>
 
         <app-task-card
-          *ngFor="let task of todoTasks(); trackBy: trackById"
+          *ngFor="let task of todoTasks(); trackBy: trackById; let first = first; let last = last"
           cdkDrag
           [task]="task"
+          [isFirst]="first"
+          [isLast]="last"
           (toggle)="toggleStatus(task)"
           (edit)="startEdit(task)"
-          (delete)="deleteTask(task.id)">
+          (delete)="deleteTask(task.id)"
+          (moveUp)="moveTask(task, 'up')"
+          (moveDown)="moveTask(task, 'down')">
         </app-task-card>
 
       </div>
