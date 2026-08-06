@@ -125,12 +125,16 @@
         </div>
 
         <app-task-card
-          *ngFor="let task of doneTasks(); trackBy: trackById"
+          *ngFor="let task of doneTasks(); trackBy: trackById; let first = first; let last = last"
           cdkDrag
           [task]="task"
+          [isFirst]="first"
+          [isLast]="last"
           (toggle)="toggleStatus(task)"
           (edit)="startEdit(task)"
-          (delete)="deleteTask(task.id)">
+          (delete)="deleteTask(task.id)"
+          (moveUp)="moveTask(task, 'up')"
+          (moveDown)="moveTask(task, 'down')">
         </app-task-card>
 
       </div>
