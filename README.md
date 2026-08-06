@@ -7,16 +7,16 @@
 
 A Kanban-style task board with real authentication, drag-and-drop reordering, server-side filtering, and an isolated sandbox per visitor.
 
-**Live demo:** [kanbanetic.vercel.app](https://kanbanetic.vercel.app) — click "Access Live Demo Version," no account needed.
+**Live demo:** [kanbanetic.vercel.app](https://kanbanetic.vercel.app) - click "Access Live Demo Version," no account needed.
 
 ## Features
 
-- **Isolated demo sessions** — every visitor gets their own cloned copy of a template board (Postgres, one-to-many relationship, `ON DELETE CASCADE`). Nothing you do is visible to anyone else.
-- **Secure session lifecycle** — JWT sessions delivered via server-side `HttpOnly` cookies, never `localStorage`.
-- **Automated session cleanup** — demo accounts older than 24h are deleted automatically (`server/src/utils/sessionCleanup.js`), so the database doesn't grow unbounded. Runs on a schedule locally/on Render; on Vercel it's triggered by Vercel Cron hitting `/api/cron/cleanup`, since serverless functions don't stay warm for `setInterval`.
-- **Reactive state management** — built with Angular Signals, no NgRx.
-- **Drag & drop** — Angular CDK, optimistic UI updates with backend-persisted ordering.
-- **Server-side filtering** — `GET /api/tasks?priority=high&search=...`, not client-side filtering.
+- **Isolated demo sessions** - every visitor gets their own cloned copy of a template board (Postgres, one-to-many relationship, `ON DELETE CASCADE`). Nothing you do is visible to anyone else.
+- **Secure session lifecycle** - JWT sessions delivered via server-side `HttpOnly` cookies, never `localStorage`.
+- **Automated session cleanup** - demo accounts older than 24h are deleted automatically (`server/src/utils/sessionCleanup.js`), so the database doesn't grow unbounded. Runs on a schedule locally/on Render; on Vercel it's triggered by Vercel Cron hitting `/api/cron/cleanup`, since serverless functions don't stay warm for `setInterval`.
+- **Reactive state management** - built with Angular Signals, no NgRx.
+- **Drag & drop** - Angular CDK, optimistic UI updates with backend-persisted ordering.
+- **Server-side filtering** - `GET /api/tasks?priority=high&search=...`, not client-side filtering.
 - **Responsive, mobile-first layout.**
 
 ## Tech Stack
@@ -25,7 +25,7 @@ A Kanban-style task board with real authentication, drag-and-drop reordering, se
 
 **Backend:** Node.js, Express 5, PostgreSQL (raw `pg` connection pooling, no ORM), JWT + Bcrypt + Cookie-Parser
 
-**Testing:** Vitest across both client and server — client tests use Angular's built-in Vitest-based test runner; server tests run against a real Postgres test database via Supertest, not a mocked connection.
+**Testing:** Vitest across both client and server - client tests use Angular's built-in Vitest-based test runner; server tests run against a real Postgres test database via Supertest, not a mocked connection.
 
 **Infrastructure:** Docker (multi-stage build), GitHub Actions CI, deployed on Vercel (Express wrapped as a serverless function + Vercel Cron)
 
@@ -47,7 +47,7 @@ A Kanban-style task board with real authentication, drag-and-drop reordering, se
    psql -d workflow_manager -f server/src/db/schema.sql
    ```
 
-   `schema.sql` is the versioned source of truth for the schema — it creates the tables, the `users.id → tasks.user_id` foreign key with `ON DELETE CASCADE`, and seeds the template account every demo session clones from.
+   `schema.sql` is the versioned source of truth for the schema - it creates the tables, the `users.id → tasks.user_id` foreign key with `ON DELETE CASCADE`, and seeds the template account every demo session clones from.
 
 2. **Configure and start the backend:**
 
@@ -70,6 +70,35 @@ A Kanban-style task board with real authentication, drag-and-drop reordering, se
 
    Open <http://localhost:4200>.
 
+## Database Schema
+
+`server/src/db/schema.sql` creates two tables:
+
+**`users`**
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | `SERIAL PRIMARY KEY` | |
+| `email` | `VARCHAR(255) UNIQUE NOT NULL` | |
+| `password_hash` | `VARCHAR(255) NOT NULL` | bcrypt hash; demo accounts get a random one |
+| `role` | `VARCHAR(50) NOT NULL DEFAULT 'user'` | |
+| `created_at` | `TIMESTAMPTZ NOT NULL DEFAULT now()` | read by `sessionCleanup.js` to find accounts older than 24h |
+
+**`tasks`**
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | `SERIAL PRIMARY KEY` | |
+| `title` | `VARCHAR(255) NOT NULL` | |
+| `description` | `TEXT` | |
+| `status` | `VARCHAR(50) NOT NULL DEFAULT 'todo'` | `'todo'` or `'done'` |
+| `priority` | `VARCHAR(50) NOT NULL DEFAULT 'low'` | `'low'`, `'medium'`, or `'high'` |
+| `order` | `INTEGER NOT NULL DEFAULT 0` | position within its column; quoted in SQL since `order` is a reserved word |
+| `user_id` | `INTEGER NOT NULL` | FK to `users.id`, `ON DELETE CASCADE` |
+| `created_at` | `TIMESTAMPTZ NOT NULL DEFAULT now()` | |
+
+`schema.sql` also seeds a template account (`id = 1`, `admin@workflow.com`) and its starter tasks. This is the row every "Access Live Demo Version" click clones into a fresh, throwaway account (see `POST /api/auth/demo` in `authRoutes.js`).
+
 ## Testing
 
 ```bash
@@ -77,7 +106,7 @@ cd client && npm test   # Angular's Vitest-based runner
 cd server && npm test   # Vitest + Supertest against a real Postgres test database
 ```
 
-Server tests automatically provision a dedicated `workflow_manager_test` database from `schema.sql` (see `server/vitest.global-setup.js`) — no manual setup needed beyond having Postgres running locally.
+Server tests automatically provision a dedicated `workflow_manager_test` database from `schema.sql` (see `server/vitest.global-setup.js`) - no manual setup needed beyond having Postgres running locally.
 
 Both suites run on every push/PR via [GitHub Actions](.github/workflows/test.yml), alongside a Docker image build to catch container-specific breakage.
 
@@ -85,14 +114,14 @@ Both suites run on every push/PR via [GitHub Actions](.github/workflows/test.yml
 
 ### Vercel (used for the live demo)
 
-The Express API is wrapped as a Vercel serverless function (`api/index.js`) and the Angular build is served as static files — see `vercel.json` for the build/rewrite configuration. Required environment variables (Production scope):
+The Express API is wrapped as a Vercel serverless function (`api/index.js`) and the Angular build is served as static files - see `vercel.json` for the build/rewrite configuration. Required environment variables (Production scope):
 
 | Key | Value |
 |---|---|
 | `DATABASE_URL` | A Postgres connection string (e.g. [Neon](https://neon.tech), which has a built-in serverless-friendly connection pooler) |
 | `JWT_SECRET` | Random string, distinct from your local dev secret |
 | `CORS_ORIGIN` | Your deployed domain, e.g. `https://kanbanetic.vercel.app` |
-| `CRON_SECRET` | Random string — authenticates Vercel Cron's daily hit against `/api/cron/cleanup` |
+| `CRON_SECRET` | Random string - authenticates Vercel Cron's daily hit against `/api/cron/cleanup` |
 
 ### Docker (self-hosted)
 
@@ -125,4 +154,4 @@ Dockerfile          multi-stage build for self-hosting
 
 ## License
 
-MIT — see [LICENSE.md](./LICENSE.md).
+MIT - see [LICENSE.md](./LICENSE.md).

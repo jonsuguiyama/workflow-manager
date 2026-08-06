@@ -1,9 +1,9 @@
 <div *ngIf="open" class="modal-backdrop" (pointerdown)="onBackdropPointerDown($event)">
-  <div class="edit-box">
-    
+  <div class="modal-box edit-box">
+
     <div class="modal-header">
       <h3>Edit Task</h3>
-      <button class="close-btn" (click)="close.emit()">✕</button>
+      <button class="modal-close-btn" aria-label="Close" (click)="close.emit()">✕</button>
     </div>
 
     <label class="field-label" for="edit-title">Title</label>

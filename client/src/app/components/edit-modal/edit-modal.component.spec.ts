@@ -57,7 +57,7 @@ describe('EditModalComponent', () => {
     const emitted = vi.fn();
     component.close.subscribe(emitted);
 
-    fixture.debugElement.query(By.css('.close-btn')).nativeElement.click();
+    fixture.debugElement.query(By.css('.modal-close-btn')).nativeElement.click();
 
     expect(emitted).toHaveBeenCalled();
   });

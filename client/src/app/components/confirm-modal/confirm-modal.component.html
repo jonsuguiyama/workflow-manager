@@ -1,0 +1,19 @@
+@if (open) {
+  <div class="modal-backdrop" (pointerdown)="onBackdropPointerDown($event)">
+    <div class="modal-box confirm-box">
+
+      <div class="modal-header">
+        <h3>{{ title }}</h3>
+        <button class="modal-close-btn" aria-label="Close" (click)="cancelled.emit()">✕</button>
+      </div>
+
+      <p class="confirm-message">{{ message }}</p>
+
+      <div class="modal-actions">
+        <button class="secondary" (click)="cancelled.emit()">{{ cancelLabel }}</button>
+        <button class="danger" (click)="confirmed.emit()">{{ confirmLabel }}</button>
+      </div>
+
+    </div>
+  </div>
+}

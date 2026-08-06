@@ -14,14 +14,30 @@
   <p>{{ task.description }}</p>
   
   <div class="actions">
+    <button
+      class="secondary icon-btn"
+      aria-label="Move up"
+      [disabled]="isFirst"
+      (click)="moveUp.emit()">
+      ↑
+    </button>
+
+    <button
+      class="secondary icon-btn"
+      aria-label="Move down"
+      [disabled]="isLast"
+      (click)="moveDown.emit()">
+      ↓
+    </button>
+
     <button class="secondary" (click)="toggle.emit()">
       {{ task.status === 'done' ? 'Reopen' : 'Done' }}
     </button>
-    
+
     <button class="secondary" (click)="edit.emit()">
       Edit
     </button>
-    
+
     <button class="danger" (click)="delete.emit()">
       Delete
     </button>
